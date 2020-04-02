@@ -1,0 +1,46 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-rails
+
+AllCops:
+  TargetRubyVersion: 2.6.4
+  # 自動生成のファイルなどを除外
+  Exclude:
+    - 'config.ru'
+    - 'bin/**'
+    - 'lib/**'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'webpacker/**/*'
+    - 'node_modules/**/*'
+    - 'spec/**/*'
+    - 'jobs/**/*'
+    - 'test/**/*'
+    - !ruby/regexp /old_and_unused\.rb$/
+
+# 日本語コメントを許可
+AsciiComments:
+  Enabled: false
+
+# 文字列のFleeze設定なしを許可
+Style/FrozenStringLiteralComment:
+    Enabled: false
+
+Metrics/AbcSize:
+  Max: 18
+
+Metrics/MethodLength:
+  Max: 15
+
+Layout/LineLength:
+  Max: 120
+
+# ヘッダコメントなしを許可
+# Documentation:
+#    Enabled: false
+
+# Module/Classのネストを許可
+#ClassAndModuleChildren:
+#    Enabled: false
