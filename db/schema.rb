@@ -10,12 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_01_142015) do
+ActiveRecord::Schema.define(version: 2020_04_02_140323) do
 
-  create_table "posts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "title"
+  create_table "bikes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "brand_id", null: false
+    t.string "serial_number", null: false
+    t.datetime "sold_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["brand_id", "sold_at"], name: "index_bikes_on_brand_id_and_sold_at"
+    t.index ["brand_id"], name: "index_bikes_on_brand_id"
+    t.index ["serial_number"], name: "index_bikes_on_serial_number", unique: true
+  end
+
+  create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_brands_on_name", unique: true
   end
 
 end
