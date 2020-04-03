@@ -1,24 +1,39 @@
-# README
+# 自転車の在庫管理API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 自転車登録API
+自転車の登録を行います。  
+ブランド名が新規のものならば、新ブランドが登録されます。  
+すでに登録されているものは、同ブランドの自転車として登録されます。  
+シリアルナンバーは異なるブランドでも一意である必要があります。
+### リクエスト
+ - ブランド名:      brand_name,     :string, :null false
+ - シリアルナンバー: serial_number,  :string, :null false
+### レスポンス
+成功時、ステータスコード 201 を返します。  
+要求バリデーションエラー時、ステータスコード 422 を返します。
 
-Things you may want to cover:
+## 自転車情報取得API
+ブランドがもつ自転車を一覧で返します。  
+### リクエスト
+ - ブランド名:      brand_name,     :string, :null false
+### レスポンス
+成功時、自転車情報を含むdataオブジェクトを返します。  
+要求ブランド名が存在しない場合、ステータスコード 404 を返します。
 
-* Ruby version
+## 自転車売却API
+自転車情報に、売却日（現在日時）を追加します。
+### リクエスト
+ - シリアルナンバー: serial_number,  :string, :null false
+### レスポンス
+成功時、ステータスコード 202 を返します。  
+シリアルナンバーに該当する自転車情報が存在しない場合、ステータスコード 404 を返します。  
+DB更新エラー発生時、ステータスコード 422 を返します。
 
-* System dependencies
+## 主な使用ライブラリ
+ - rubocop
+ - bullet
+ - rspec
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## その他
+ - Dockerで起動できます。
+ - push時に自動でrubocopとrspecで検証が行われます。
