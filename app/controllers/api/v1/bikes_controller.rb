@@ -2,8 +2,13 @@
 class Api::V1::BikesController < ApplicationController
   # GET api/v1/bikes
   def index
-    bikes = Bike.all
-    render json: bikes
+    brand = Brand.find_by(name: params[:brand_name])
+    if brand.nil?
+      render status: :not_found
+    else
+      bikes = brand.bikes.all
+      render status: :ok, json: { data: bikes }
+    end
   end
 
   # POST /api/v1/bikes
