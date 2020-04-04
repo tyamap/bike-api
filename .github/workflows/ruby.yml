@@ -24,7 +24,7 @@ jobs:
       - name: Prepare database
         run: |
           rails db:create
-          rails db:migrade
+          rails db:migrate
       - name: Run test
         run: |
           rubocop
