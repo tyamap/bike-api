@@ -9,7 +9,7 @@ AllCops:
   Exclude:
     - 'config.ru'
     - 'bin/**'
-    - 'lib/**'
+    - 'lib/**/*'
     - 'db/**/*'
     - 'config/**/*'
     - 'script/**/*'
@@ -19,6 +19,14 @@ AllCops:
     - 'jobs/**/*'
     - 'test/**/*'
     - !ruby/regexp /old_and_unused\.rb$/
+
+# ヘッダコメントなしを許可
+# Documentation:
+#    Enabled: false
+
+# Module/Classのネストのシンプル表現を許可
+ClassAndModuleChildren:
+    Enabled: false
 
 # 日本語コメントを許可
 AsciiComments:
@@ -36,11 +44,3 @@ Metrics/MethodLength:
 
 Layout/LineLength:
   Max: 120
-
-# ヘッダコメントなしを許可
-# Documentation:
-#    Enabled: false
-
-# Module/Classのネストを許可
-#ClassAndModuleChildren:
-#    Enabled: false

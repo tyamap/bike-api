@@ -15,8 +15,9 @@
 #  index_bikes_on_brand_id_and_sold_at  (brand_id,sold_at)
 #  index_bikes_on_serial_number         (serial_number) UNIQUE
 #
-require 'rails_helper'
-
-RSpec.describe Bike, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+FactoryBot.define do
+  factory :bike do
+    brand_id { 1 }
+    sequence(:serial_number) { |n| "sn_#{n}" }
+  end
 end

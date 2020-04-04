@@ -1,29 +1,13 @@
 require "rails_helper"
 
-RSpec.describe BikesController, type: :routing do
+RSpec.describe Api::V1::BikesController, type: :routing do
   describe "routing" do
     it "routes to #index" do
-      expect(get: "/bikes").to route_to("bikes#index")
-    end
-
-    it "routes to #show" do
-      expect(get: "/bikes/1").to route_to("bikes#show", id: "1")
+      expect(get: "api/v1/bikes").to route_to("api/v1/bikes#index")
     end
 
     it "routes to #create" do
-      expect(post: "/bikes").to route_to("bikes#create")
-    end
-
-    it "routes to #update via PUT" do
-      expect(put: "/bikes/1").to route_to("bikes#update", id: "1")
-    end
-
-    it "routes to #update via PATCH" do
-      expect(patch: "/bikes/1").to route_to("bikes#update", id: "1")
-    end
-
-    it "routes to #destroy" do
-      expect(delete: "/bikes/1").to route_to("bikes#destroy", id: "1")
+      expect(post: "api/v1/bikes").to route_to("api/v1/bikes#create")
     end
   end
 end
