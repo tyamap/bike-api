@@ -18,9 +18,9 @@ jobs:
       image: ruby:2.6.5
       env:
         RAILS_ENV: test
-        RAILS_DATABASE_HOST: postgres # this is needed
-        RAILS_DATABASE_USER: pguser
-        RAILS_DATABASE_PASSWORD: password
+        RAILS_DATABASE_HOST: mysql # this is needed
+        MYSQL_ROOT_PASSWORD: password
+        MYSQL_DATABASE: root
       steps:
       - uses: actions/checkout@v1
       - name: Prepare bundler
