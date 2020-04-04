@@ -19,6 +19,6 @@ describe 'ShowBikesApi' do
     json = JSON.parse(response.body)
 
     expect(response.status).to eq(200)
-    expect(json.length).to eq(10)
+    expect(json['data'].length).to eq(10)
   end
 end
