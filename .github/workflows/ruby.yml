@@ -3,20 +3,39 @@ name: Ruby
 on: [push]
 
 jobs:
-  run-spec:
-    name: Run test
+  run-rubocop:
+    name: Run rubocop
 
     runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6.x
-    - name: Test with rubocop and Rspec
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec rubocop -a
-        bundle exec rspec
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: root
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    container:
+      image: ruby:2.6.5
+      env:
+        RAILS_ENV: test
+        RAILS_DATABASE_HOST: postgres # this is needed
+        RAILS_DATABASE_USER: pguser
+        RAILS_DATABASE_PASSWORD: password
+      steps:
+      - uses: actions/checkout@v1
+      - name: Prepare bundler
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+      - name: Prepare database
+        run: |
+          rails db:create
+          rails db:migrade
+      - name: Run test
+        run: |
+          rubocop
+          rspec
