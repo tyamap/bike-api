@@ -14,5 +14,5 @@
 class Brand < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: true }, length: { maximum: 255 }
 
-  has_many :bikes
+  has_many :bikes, dependent: :destroy, autosave: true
 end
