@@ -3,11 +3,8 @@ name: Ruby
 on: [push]
 
 jobs:
-  run-rubocop:
-    name: Run rubocop
-
+  build:
     runs-on: ubuntu-latest
-
     services:
       mysql:
         image: mysql:5.7
@@ -17,7 +14,6 @@ jobs:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: root
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     container:
       image: ruby:2.6.5
       env:
