@@ -1,51 +1,35 @@
 class Api::V1::BikesController < ApplicationController
-  before_action :set_bike, only: [:show, :update, :destroy]
-
-  # GET /bikes
+  # GET api/v1/bikes
   def index
     @bikes = Bike.all
 
     render json: @bikes
   end
 
-  # GET /bikes/1
-  def show
-    render json: @bike
-  end
-
-  # POST /bikes
+  # POST /api/v1/bikes
   def create
-    @bike = Bike.new(bike_params)
-
-    if @bike.save
-      render json: @bike, status: :created, location: @bike
+    @brand = Brand.find_by(name: params[:brand_name])
+    if @brand.nil?
+      @brand_id = Brand.create(name: params[:brand_name]).id
+    else
+      @brand_id = @brand.id
+    end
+    @bike = Bike.new(brand_id: @brand_id, serial_number: create_bike_params[:serial_number])
+    if @bike.save!
+      render json: @bike, status: :created
     else
       render json: @bike.errors, status: :unprocessable_entity
     end
-  end
-
-  # PATCH/PUT /bikes/1
-  def update
-    if @bike.update(bike_params)
-      render json: @bike
-    else
-      render json: @bike.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /bikes/1
-  def destroy
-    @bike.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_bike
-      @bike = Bike.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def bike_params
-      params.fetch(:bike, {})
-    end
+  # Only allow a trusted parameter "white list" through.
+  def bike_params 
+    params.require(:bike).permit(:brand_id, :serial_number)
+  end
+
+  def create_bike_params 
+    params.permit(:brand_name, :serial_number)
+  end
 end
