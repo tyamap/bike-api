@@ -1,51 +1,50 @@
+# 自転車管理コントローラー
 class Api::V1::BikesController < ApplicationController
-  before_action :set_bike, only: [:show, :update, :destroy]
-
-  # GET /bikes
+  # GET api/v1/bikes
   def index
-    @bikes = Bike.all
-
-    render json: @bikes
+    brand = Brand.find_by(name: params[:brand_name])
+    if brand.nil?
+      render status: :not_found
+    else
+      bikes = brand.bikes.all
+      render status: :ok, json: { data: bikes }
+    end
   end
 
-  # GET /bikes/1
-  def show
-    render json: @bike
-  end
-
-  # POST /bikes
+  # POST /api/v1/bikes
   def create
-    @bike = Bike.new(bike_params)
-
-    if @bike.save
-      render json: @bike, status: :created, location: @bike
+    brand = Brand.find_by(name: params[:brand_name])
+    brand_id = if brand.nil?
+                 Brand.create(name: params[:brand_name]).id
+               else
+                 brand.id
+               end
+    bike = Bike.new(brand_id: brand_id, serial_number: create_bike_params[:serial_number])
+    if bike.save!
+      render json: bike, status: :created
     else
-      render json: @bike.errors, status: :unprocessable_entity
+      render json: bike.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /bikes/1
+  # PUT /api/v1/bikes
   def update
-    if @bike.update(bike_params)
-      render json: @bike
+    bike = Bike.find_by(serial_number: params[:serial_number])
+    if bike.nil?
+      render status: :not_found
     else
-      render json: @bike.errors, status: :unprocessable_entity
+      bike.sold_at = Time.zone.now
+      if bike.save!
+        render json: bike, status: :accepted
+      else
+        render json: bike.errors, status: :unprocessable_entity
+      end
     end
-  end
-
-  # DELETE /bikes/1
-  def destroy
-    @bike.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_bike
-      @bike = Bike.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def bike_params
-      params.fetch(:bike, {})
-    end
+  def create_bike_params
+    params.permit(:brand_name, :serial_number)
+  end
 end

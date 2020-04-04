@@ -1,0 +1,33 @@
+name: Ruby
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+    container:
+      image: ruby:2.6.5
+      env:
+        MYSQL_HOST: mysql
+        MYSQL_ROOT_PASSWORD: password
+    steps:
+      - uses: actions/checkout@v1
+      - name: Prepare bundler
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+      - name: Prepare database
+        run: |
+          rails db:create
+          rails db:migrate
+      - name: Run rubocop
+        run: |
+          bundle exec rubocop
+      - name: Run rspec
+        run: |
+          bundle exec rspec
