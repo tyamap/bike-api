@@ -28,3 +28,27 @@ describe 'ShowBikesApi' do
     expect(response.status).to eq(404)
   end
 end
+
+describe 'SaleBikesApi' do
+  before do
+    brand = FactoryBot.create(:brand)
+    @bike = FactoryBot.create(:bike, brand: brand)
+  end
+  example 'シリアルナンバーで指定した自転車に売却日（現在日時）を追加する' do
+    expect(Bike.first.sold_at).to be nil
+    valid_params = { serial_number: @bike.serial_number }
+    put '/api/v1/bikes', params: valid_params
+    expect(Bike.first.sold_at).not_to be nil
+    expect(response.status).to eq(202)
+  end
+
+  example '要求シリアルナンバーが存在しない場合、ステータスコード 404 を返す' do
+    invalid_params = { serial_number: 'hoge' }
+    put '/api/v1/bikes', params: invalid_params
+    expect(response.status).to eq(404)
+  end
+
+  pending 'DB更新エラー発生時、ステータスコード422を返す' do
+    expect(response.status).to eq(422)
+  end
+end

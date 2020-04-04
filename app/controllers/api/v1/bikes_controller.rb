@@ -27,6 +27,21 @@ class Api::V1::BikesController < ApplicationController
     end
   end
 
+  # PUT /api/v1/bikes
+  def update
+    bike = Bike.find_by(serial_number: params[:serial_number])
+    if bike.nil?
+      render status: :not_found
+    else
+      bike.sold_at = Time.zone.now
+      if bike.save!
+        render json: bike, status: :accepted
+      else
+        render json: bike.errors, status: :unprocessable_entity
+      end
+    end
+  end
+
   private
 
   def create_bike_params
