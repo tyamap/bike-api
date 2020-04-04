@@ -29,7 +29,6 @@ class Api::V1::BikesController < ApplicationController
 
   private
 
-
   def create_bike_params
     params.permit(:brand_name, :serial_number)
   end

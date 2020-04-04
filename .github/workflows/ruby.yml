@@ -25,7 +25,9 @@ jobs:
         run: |
           rails db:create
           rails db:migrate
-      - name: Run test
+      - name: Run rubocop
         run: |
-          rubocop
-          rspec
+          bundle exec rubocop
+      - name: Run rspec
+        run: |
+          bundle exec rspec
