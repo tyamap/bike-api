@@ -29,10 +29,6 @@ class Api::V1::BikesController < ApplicationController
 
   private
 
-  # Only allow a trusted parameter "white list" through.
-  def bike_params
-    params.require(:bike).permit(:brand_id, :serial_number)
-  end
 
   def create_bike_params
     params.permit(:brand_name, :serial_number)
