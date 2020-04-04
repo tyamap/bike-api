@@ -35,10 +35,10 @@ describe 'SaleBikesApi' do
     @bike = FactoryBot.create(:bike, brand: brand)
   end
   example 'シリアルナンバーで指定した自転車に売却日（現在日時）を追加する' do
-    expect(@bike.sold_at).to be nil
+    expect(Bike.first.sold_at).to be nil
     valid_params = { serial_number: @bike.serial_number }
     put '/api/v1/bikes', params: valid_params
-    # expect(@bike.sold_at).not_to be nil
+    expect(Bike.first.sold_at).not_to be nil
     expect(response.status).to eq(202)
   end
 
