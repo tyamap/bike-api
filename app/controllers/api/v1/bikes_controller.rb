@@ -2,8 +2,13 @@
 class Api::V1::BikesController < ApplicationController
   # GET api/v1/bikes
   def index
-    bikes = Bike.all
-    render json: bikes
+    brand = Brand.find_by(name: params[:brand_name])
+    if brand.nil?
+      render status: :not_found
+    else
+      bikes = brand.bikes.all
+      render status: :ok, json: { data: bikes }
+    end
   end
 
   # POST /api/v1/bikes
@@ -24,10 +29,6 @@ class Api::V1::BikesController < ApplicationController
 
   private
 
-  # Only allow a trusted parameter "white list" through.
-  def bike_params
-    params.require(:bike).permit(:brand_id, :serial_number)
-  end
 
   def create_bike_params
     params.permit(:brand_name, :serial_number)
