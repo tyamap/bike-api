@@ -16,5 +16,7 @@
 #  index_bikes_on_serial_number         (serial_number) UNIQUE
 #
 class Bike < ApplicationRecord
+  validates :serial_number, presence: true, uniqueness: { case_sensitive: true }, length: { maximum: 255 }
+
   belongs_to :brand
 end
