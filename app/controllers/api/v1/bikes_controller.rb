@@ -40,7 +40,7 @@ class Api::V1::BikesController < ApplicationController
       if bike.save
         render status: :accepted, json: { data: bike }
       else
-        # DB更新エラー発生時、422エラー
+        # すでに売却済みの場合、422エラー
         render status: :unprocessable_entity, json: { errors: bike.errors }
       end
     else
