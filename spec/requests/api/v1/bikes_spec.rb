@@ -24,6 +24,12 @@ RSpec.describe '/api/v1/bikes', type: :request do
       expect(response.status).to eq(201)
     end
 
+    example '新規ブランド名が256文字以上の場合、ステータスコード 422 を返す' do
+      invalid_params = { brand_name: 'a' * 256, serial_number: @serial_number }
+      post '/api/v1/bikes', params: invalid_params
+      expect(response.status).to eq(422)
+    end
+
     example 'すでに登録されているシリアルナンバーが登録された場合、ステータスコード 422 を返す' do
       valid_params = { brand_name: @brand.name, serial_number: @serial_number }
       post '/api/v1/bikes', params: valid_params
