@@ -6,6 +6,7 @@ class Api::V1::BikesController < ApplicationController
     # TODO: nilだった場合のエラーハンドリングを親クラスに定義して共通化
     if brand.present?
       bikes = brand.bikes.all
+      bikes = bikes.includes(:brand)
       render status: :ok, json: { data: bikes }
     else
       render status: :not_found, json: { errors: :not_found }
@@ -33,9 +34,7 @@ class Api::V1::BikesController < ApplicationController
   def update
     bike = Bike.find_by(serial_number: params[:serial_number])
     if bike.nil?
-      render status: :not_found
-    # TODO: Modelでバリデーションできないか？
-    elsif bike.sold_at.nil?
+      render status: :not_found, json: { errors: :not_found }
     else
       bike.sold_at = Time.zone.now
       if bike.save
