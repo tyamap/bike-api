@@ -48,7 +48,11 @@ describe 'SaleBikesApi' do
     expect(response.status).to eq(404)
   end
 
-  pending 'DB更新エラー発生時、ステータスコード422を返す' do
+  example 'すでに売却済みの場合、DB更新エラーとしてステータスコード422を返す' do
+    valid_params = { serial_number: @bike.serial_number }
+    # 二回実行
+    put '/api/v1/bikes', params: valid_params
+    put '/api/v1/bikes', params: valid_params
     expect(response.status).to eq(422)
   end
 end
