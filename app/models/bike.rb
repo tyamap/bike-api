@@ -17,14 +17,12 @@
 #
 class Bike < ApplicationRecord
   validates :serial_number, presence: true, uniqueness: { case_sensitive: true }, length: { maximum: 255 }
-  validate :is_already_sold, on: :update
+  validate :already_sold?, on: :update
 
   belongs_to :brand
 
   # すでに売却されていないかチェック
-  def is_already_sold
-    if sold_at_was.present?
-      errors.add(:sold_at, "is already sold")
-    end
+  def already_sold?
+    errors.add(:sold_at, 'is already sold') if sold_at_was.present?
   end
 end
