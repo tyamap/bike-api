@@ -36,15 +36,13 @@ class Api::V1::BikesController < ApplicationController
       render status: :not_found
     # TODO: Modelでバリデーションできないか？
     elsif bike.sold_at.nil?
+    else
       bike.sold_at = Time.zone.now
       if bike.save
         render status: :accepted, json: { data: bike }
       else
-        # すでに売却済みの場合、422エラー
         render status: :unprocessable_entity, json: { errors: bike.errors }
       end
-    else
-      render status: :unprocessable_entity, json: { errors: 'is already sold' }
     end
   end
 
