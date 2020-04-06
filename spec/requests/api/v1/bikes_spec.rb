@@ -1,14 +1,35 @@
 require 'rails_helper'
 
-# テスト名を POST ~ の形に変更
 describe 'NewBikeApi' do
+  before do
+    @brand = FactoryBot.create(:brand)
+    @serial_number = '1111'
+  end
   example '新しい自転車を登録する' do
-    valid_params = { brand_name: 'brand_1', serial_number: 'bike_1' }
+    valid_params = { brand_name: @brand.name, serial_number: @serial_number }
     expect { post '/api/v1/bikes', params: valid_params }.to change(Bike, :count).by(+1)
     expect(response.status).to eq(201)
   end
-  # TODO: 新規ブランドの場合、ブランドテーブルにデータが追加されるテストを追加
-  # TODO: バリデーションエラー時に422コードが返るテストを追加
+
+  example 'データベースにすでにあるブランド名で登録された際、ブランドテーブルには何も追加されない' do
+    valid_params = { brand_name: @brand.name, serial_number: @serial_number }
+    expect { post '/api/v1/bikes', params: valid_params }.to change(Brand, :count).by(0)
+    expect(response.status).to eq(201)
+  end
+
+  example 'データベースにないブランド名で登録された際、ブランドテーブルにブランドを追加する' do
+    valid_params = { brand_name: 'hoge', serial_number: @serial_number }
+    expect { post '/api/v1/bikes', params: valid_params }.to change(Brand, :count).by(+1)
+    expect(response.status).to eq(201)
+  end
+
+  example 'すでに登録されているシリアルナンバーが登録された場合、ステータスコード 422 を返す' do
+    valid_params = { brand_name: @brand.name, serial_number: @serial_number }
+    post '/api/v1/bikes', params: valid_params
+    invalid_params = { brand_name: 'hoge', serial_number: @serial_number }
+    post '/api/v1/bikes', params: invalid_params
+    expect(response.status).to eq(422)
+  end
 end
 
 describe 'ShowBikesApi' do
@@ -26,7 +47,7 @@ describe 'ShowBikesApi' do
   end
 
   example '要求ブランド名が存在しない場合、ステータスコード 404 を返す' do
-    invalid_params = { brand_name: "hoge" }
+    invalid_params = { brand_name: 'hoge' }
     get '/api/v1/bikes', params: invalid_params
     expect(response.status).to eq(404)
   end
