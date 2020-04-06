@@ -5,8 +5,7 @@ class Api::V1::BikesController < ApplicationController
     brand = Brand.find_by(name: params[:brand_name])
     # TODO: nilだった場合のエラーハンドリングを親クラスに定義して共通化
     if brand.nil?
-      # TODO: JSONデータもレスポンスに含める
-      render status: :not_found
+      render status: :not_found, json: { errors: :not_found }
     else
       bikes = brand.bikes.all
       render status: :ok, json: { data: bikes }
@@ -23,12 +22,10 @@ class Api::V1::BikesController < ApplicationController
                  brand.id
                end
     bike = Bike.new(brand_id: brand_id, serial_number: create_bike_params[:serial_number])
-    # TODO: savw! ではなく save を用いる
-    if bike.save!
-      # TODO: レスポンスの形を他と統一
-      render json: bike, status: :created
+    if bike.save
+      render status: :created, json: { data: bike }
     else
-      render json: bike.errors, status: :unprocessable_entity
+      render status: :unprocessable_entity, json: { errors: bike.errors }
     end
   end
 
