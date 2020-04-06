@@ -21,7 +21,7 @@ class Api::V1::BikesController < ApplicationController
                else
                  brand.id
                end
-    bike = Bike.new(brand_id: brand_id, serial_number: create_bike_params[:serial_number])
+    bike = Bike.new(brand_id: brand_id, serial_number: params[:serial_number])
     if bike.save
       render status: :created, json: { data: bike }
     else
@@ -49,10 +49,6 @@ class Api::V1::BikesController < ApplicationController
   end
 
   private
-
-  def create_bike_params
-    params.permit(:brand_name, :serial_number)
-  end
 
   def get_brand_by_name(name)
     Brand.find_by(name: name)
