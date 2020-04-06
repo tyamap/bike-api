@@ -1,11 +1,14 @@
 require 'rails_helper'
 
+# テスト名を POST ~ の形に変更
 describe 'NewBikeApi' do
   example '新しい自転車を登録する' do
     valid_params = { brand_name: 'brand_1', serial_number: 'bike_1' }
     expect { post '/api/v1/bikes', params: valid_params }.to change(Bike, :count).by(+1)
     expect(response.status).to eq(201)
   end
+  # TODO: 新規ブランドの場合、ブランドテーブルにデータが追加されるテストを追加
+  # TODO: バリデーションエラー時に422コードが返るテストを追加
 end
 
 describe 'ShowBikesApi' do
