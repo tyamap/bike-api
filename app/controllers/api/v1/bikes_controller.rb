@@ -2,13 +2,13 @@
 class Api::V1::BikesController < ApplicationController
   # GET api/v1/bikes
   def index
-    brand = Brand.find_by(name: params[:brand_name])
+    brand = get_brand_by_name(params[:brand_name])
     # TODO: nilだった場合のエラーハンドリングを親クラスに定義して共通化
-    if brand.nil?
-      render status: :not_found, json: { errors: :not_found }
-    else
+    if brand.present?
       bikes = brand.bikes.all
       render status: :ok, json: { data: bikes }
+    else
+      render status: :not_found, json: { errors: :not_found }
     end
   end
 
@@ -52,5 +52,9 @@ class Api::V1::BikesController < ApplicationController
 
   def create_bike_params
     params.permit(:brand_name, :serial_number)
+  end
+
+  def get_brand_by_name(name)
+    Brand.find_by(name: name)
   end
 end
