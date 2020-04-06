@@ -35,6 +35,6 @@ DB更新エラー発生時、ステータスコード 422 を返します。
  - rspec
 
 ## CIツール・その他
- - GitHub.Actions
+ - GitHub Actions
    - push時にrubocopとrspecで検証が行われます。
  - Dockerで起動できます。
