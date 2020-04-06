@@ -18,5 +18,24 @@
 require 'rails_helper'
 
 RSpec.describe Bike, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#valid' do
+    before do
+      brand = FactoryBot.create(:brand)
+      @bike = FactoryBot.create(:bike, brand: brand)
+    end
+
+    example '有効ならtrueを返す' do
+      expect(@bike.valid?).to be_truthy
+    end
+
+    example 'シリアルナンバーが255文字以下ならtrueを返す' do
+      @bike.serial_number = 'a' * 255
+      expect(@bike.valid?).to be_truthy
+    end
+    
+    example 'シリアルナンバーが256文字以上ならfalseを返す' do
+      @bike.serial_number = 'a' * 256
+      expect(@bike.valid?).to be_falsey
+    end
+  end
 end
