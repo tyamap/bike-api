@@ -32,13 +32,15 @@ class Api::V1::BikesController < ApplicationController
     bike = Bike.find_by(serial_number: params[:serial_number])
     if bike.nil?
       render status: :not_found
-    else
+    elsif bike.sold_at.nil?
       bike.sold_at = Time.zone.now
-      if bike.save!
+      if bike.save
         render json: bike, status: :accepted
       else
         render json: bike.errors, status: :unprocessable_entity
       end
+    else
+      render status: :unprocessable_entity
     end
   end
 
