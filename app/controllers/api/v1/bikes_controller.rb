@@ -33,15 +33,15 @@ class Api::V1::BikesController < ApplicationController
   # PUT /api/v1/bikes
   def update
     bike = Bike.find_by(serial_number: params[:serial_number])
-    if bike.nil?
-      render status: :not_found, json: { errors: :not_found }
-    else
+    if bike.present?
       bike.sold_at = Time.zone.now
       if bike.save
         render status: :accepted, json: { data: bike }
       else
         render status: :unprocessable_entity, json: { errors: bike.errors }
       end
+    else
+      render status: :not_found, json: { errors: :not_found }
     end
   end
 
