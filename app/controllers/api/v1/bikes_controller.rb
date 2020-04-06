@@ -35,12 +35,13 @@ class Api::V1::BikesController < ApplicationController
     elsif bike.sold_at.nil?
       bike.sold_at = Time.zone.now
       if bike.save
-        render json: bike, status: :accepted
+        render status: :accepted, json: { data: bike }
       else
-        render json: bike.errors, status: :unprocessable_entity
+        # DB更新エラー発生時、422エラー
+        render status: :unprocessable_entity, json: { errors: bike.errors }
       end
     else
-      render status: :unprocessable_entity
+      render status: :unprocessable_entity, json: { errors: 'is already sold' }
     end
   end
 
