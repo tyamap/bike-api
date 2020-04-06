@@ -9,5 +9,9 @@ RSpec.describe Api::V1::BikesController, type: :routing do
     it "routes to #create" do
       expect(post: "api/v1/bikes").to route_to("api/v1/bikes#create")
     end
+
+    it "routes to #update" do
+      expect(put: "api/v1/bikes").to route_to("api/v1/bikes#update")
+    end
   end
 end
