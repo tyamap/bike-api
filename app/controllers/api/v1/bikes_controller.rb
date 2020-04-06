@@ -3,7 +3,9 @@ class Api::V1::BikesController < ApplicationController
   # GET api/v1/bikes
   def index
     brand = Brand.find_by(name: params[:brand_name])
+    # TODO: nilだった場合のエラーハンドリングを親クラスに定義して共通化
     if brand.nil?
+      # TODO: JSONデータもレスポンスに含める
       render status: :not_found
     else
       bikes = brand.bikes.all
@@ -14,13 +16,16 @@ class Api::V1::BikesController < ApplicationController
   # POST /api/v1/bikes
   def create
     brand = Brand.find_by(name: params[:brand_name])
+    # TODO: 以下のロジックを分離したほうが良い？
     brand_id = if brand.nil?
                  Brand.create(name: params[:brand_name]).id
                else
                  brand.id
                end
     bike = Bike.new(brand_id: brand_id, serial_number: create_bike_params[:serial_number])
+    # TODO: savw! ではなく save を用いる
     if bike.save!
+      # TODO: レスポンスの形を他と統一
       render json: bike, status: :created
     else
       render json: bike.errors, status: :unprocessable_entity
@@ -32,6 +37,7 @@ class Api::V1::BikesController < ApplicationController
     bike = Bike.find_by(serial_number: params[:serial_number])
     if bike.nil?
       render status: :not_found
+    # TODO: Modelでバリデーションできないか？
     elsif bike.sold_at.nil?
       bike.sold_at = Time.zone.now
       if bike.save

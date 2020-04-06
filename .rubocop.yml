@@ -24,17 +24,32 @@ AllCops:
 # Documentation:
 #    Enabled: false
 
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
 # Module/Classのネストのシンプル表現を許可
-ClassAndModuleChildren:
-    Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
 
 # 日本語コメントを許可
-AsciiComments:
+Style/AsciiComments:
   Enabled: false
 
 # 文字列のFleeze設定なしを許可
 Style/FrozenStringLiteralComment:
-    Enabled: false
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
 
 Metrics/AbcSize:
   Max: 18
