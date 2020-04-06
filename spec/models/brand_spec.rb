@@ -14,5 +14,23 @@
 require 'rails_helper'
 
 RSpec.describe Brand, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#valid?' do
+    before do
+      @brand = FactoryBot.create(:brand)
+    end
+
+    example '有効ならtrueを返す' do
+      expect(@brand.valid?).to be_truthy
+    end
+
+    example 'ブランド名が255文字以下ならtrueを返す' do
+      @brand.name = 'a' * 255
+      expect(@brand.valid?).to be_truthy
+    end
+    
+    example 'ブランド名が256文字以上ならfalseを返す' do
+      @brand.name = 'a' * 256
+      expect(@brand.valid?).to be_falsey
+    end
+  end
 end

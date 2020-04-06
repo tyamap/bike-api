@@ -1,59 +1,56 @@
 # 自転車管理コントローラー
 class Api::V1::BikesController < ApplicationController
+  before_action :set_brand, only: [:index]
+  before_action :create_or_set_brand, only: [:create]
+  before_action :set_bike, only: [:update]
+
   # GET api/v1/bikes
+  # 自転車情報取得API
   def index
-    brand = Brand.find_by(name: params[:brand_name])
-    # TODO: nilだった場合のエラーハンドリングを親クラスに定義して共通化
-    if brand.nil?
-      # TODO: JSONデータもレスポンスに含める
-      render status: :not_found
-    else
-      bikes = brand.bikes.all
-      render status: :ok, json: { data: bikes }
-    end
+    bikes = @brand.bikes.all
+    bikes = bikes.includes(:brand)
+    render status: :ok, json: { data: bikes }
   end
 
   # POST /api/v1/bikes
+  # 自転車情報登録API
   def create
-    brand = Brand.find_by(name: params[:brand_name])
-    # TODO: 以下のロジックを分離したほうが良い？
-    brand_id = if brand.nil?
-                 Brand.create(name: params[:brand_name]).id
-               else
-                 brand.id
-               end
-    bike = Bike.new(brand_id: brand_id, serial_number: create_bike_params[:serial_number])
-    # TODO: savw! ではなく save を用いる
-    if bike.save!
-      # TODO: レスポンスの形を他と統一
-      render json: bike, status: :created
+    bike = Bike.new(brand_id: @brand.id, serial_number: params[:serial_number])
+    if bike.save
+      render status: :created, json: { data: bike }
     else
-      render json: bike.errors, status: :unprocessable_entity
+      render status: :unprocessable_entity, json: { errors: bike.errors }
     end
   end
 
   # PUT /api/v1/bikes
+  # 自転車売却API
   def update
-    bike = Bike.find_by(serial_number: params[:serial_number])
-    if bike.nil?
-      render status: :not_found
-    # TODO: Modelでバリデーションできないか？
-    elsif bike.sold_at.nil?
-      bike.sold_at = Time.zone.now
-      if bike.save
-        render status: :accepted, json: { data: bike }
-      else
-        # DB更新エラー発生時、422エラー
-        render status: :unprocessable_entity, json: { errors: bike.errors }
-      end
+    @bike.sold_at = Time.zone.now
+    if @bike.save
+      render status: :accepted, json: { data: @bike }
     else
-      render status: :unprocessable_entity, json: { errors: 'is already sold' }
+      render status: :unprocessable_entity, json: { errors: @bike.errors }
     end
   end
 
   private
 
-  def create_bike_params
-    params.permit(:brand_name, :serial_number)
+  # ブランド名からブランドインスタンスを取得
+  def set_brand
+    @brand = Brand.find_by(name: params[:brand_name])
+    render status: :not_found, json: { errors: { brand_name: ['not found'] } } if @brand.nil?
+  end
+
+  # ブランド名からブランドインスタンスを取得。該当ブランドがなければ新規に登録
+  def create_or_set_brand
+    @brand = Brand.find_by(name: params[:brand_name])
+    @brand = Brand.create(name: params[:brand_name]) if @brand.nil?
+  end
+
+  # シリアルナンバーから自転車インスタンスを取得
+  def set_bike
+    @bike = Bike.find_by(serial_number: params[:serial_number])
+    render status: :not_found, json: { errors: { serial_number: ['not found'] } } if @bike.nil?
   end
 end
